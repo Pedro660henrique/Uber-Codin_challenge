@@ -1,15 +1,19 @@
 package com.pedro.email_service.infra.ses;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.amazonaws.services.pinpointemail.model.SendEmailRequest;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.model.Body;
 import com.amazonaws.services.simpleemail.model.Content;
-import com.amazonaws.services.simpleemailv2.model.Body;
-import com.amazonaws.services.simpleemailv2.model.Destination;
-import com.amazonaws.services.simpleemailv2.model.Message;
+import com.amazonaws.services.simpleemail.model.Destination;
+import com.amazonaws.services.simpleemail.model.Message;
+import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.pedro.email_service.adapters.EmailSenderGateway;
+import com.pedro.email_service.core.exception.EmailServiceException;
 
+@Service
 public class SesEmailSender implements EmailSenderGateway{
 
 	private final AmazonSimpleEmailService amazonSimpleEmailService;
@@ -28,6 +32,11 @@ public class SesEmailSender implements EmailSenderGateway{
 						.withSubject(new Content(subject))
 						.withBody(new Body().withText(new Content(body)))
 						);
+		try {
+			this.amazonSimpleEmailService.sendEmail(request);
+		}catch(AmazonServiceException exception) {
+			throw new EmailServiceException("Failure while sending email", exception);
+		}
 	}
 
 }

@@ -1,0 +1,5 @@
+package com.pedro.email_service.core;
+
+public class EmailSenderUseCase {
+
+}

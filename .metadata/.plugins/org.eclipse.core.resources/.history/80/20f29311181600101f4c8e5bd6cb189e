@@ -1,0 +1,5 @@
+package com.pedro.email_service.application;
+
+public class EmailSenderService {
+
+}
